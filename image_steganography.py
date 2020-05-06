@@ -71,22 +71,83 @@ def img_pixel_extraction(file_name):
     return pix_val,im
 #img_pixel_extraction('./testing_1.jpg')
 
+#Encodes the given message and returns the modified Pixel List
+def encoder(bin_list, pixel_list):
+    pos=0
+    length=len(bin_list)
+
+    # 1st loop iterates the 8 bit binaru elements in the bin_list
+    for character in bin_list:
+        slice_min=0
+        slice_max=2
+
+        # loop is used to iterate a set of 4 pixels for 1 byte ie for each character
+        for i in range(0,4):
+            cg=list(pixel_list[pos])
+            cg_pos=0
+
+            # this block is executed for 1st 3 pixel packets in the set
+            if i!=3:
+                for bit in character[slice_min:slice_max]:
+                    if bit == 1:
+                        if(cg[cg_pos]%2==0):
+                            cg[cg_pos]-=1
+                    else:
+                        if(cg[cg_pos]%2 != 0):
+                            cg[cg_pos]-=1
+                    cg_pos+=1
+                pixel_list[pos]=tuple(cg)
+                slice_min+=3
+                if i == 2:
+                    slice_max+=2
+                else:
+                    slice_max+=3
+                pos+=1
+
+            # this block is executed for the last pixel packet in the set
+            elif(i == 3):
+                for bit in character[slice_min:slice_max]:
+                    if bit == 1:
+                        if(cg[cg_pos]%2==0):
+                            cg[cg_pos]-=1
+                    else:
+                        if(cg[cg_pos]%2 != 0):
+                            cg[cg_pos]-=1
+                    cg_pos+=1
+                cg_pos+=1
+
+                if(cg[cg_pos]%2!=0 and 3*(pos+1) < length ):
+                    cg[cg_pos]-=1
+                elif(cg[cg_pos]%2 == 0 and 3*(pos+1) == length):
+                    cg[cg_pos]-=1
+
+                pixel_list[pos]=tuple(cg)
+                pos+=1
+
+
+
 def initializer():
     clear()
-    choice=int(input("Enter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit"))
-    if choice == 1:
+    choice=input("Enter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
+    if choice == '1':
         msg=str(input("Enter the message you want to encode: \n"))
         img_name=str(input("Enter the name of the image with the extention: "))
         img_out_name=str(input("Enter the name of the encoded image with the extention: "))
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
-        img_pixel_list_out=fun_name(msg_bin_list,img_pixel_list)
-        pixel_img_conversion(img_out_name, img_pixel_list_out, im)
-    elif choice == 0:
+        img_pixel_list_out=img_pixel_list.copy()
+        encoder(msg_bin_list,img_pixel_list_out)
+        print(msg_bin_list[1])
+        print(img_pixel_list[4:8])
+        print(img_pixel_list_out[4:8])
+        #pixel_img_conversion(img_out_name, img_pixel_list_out, im)
+    elif choice == '0':
         """decoder code"""
-    elif choice == 5:
+    elif choice == '5':
         exit()
     else:
         print("Invalid entry pls try again is 3sec")
         time.sleep(3)
         initializer()
+
+initializer()
