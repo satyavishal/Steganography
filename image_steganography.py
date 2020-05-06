@@ -5,12 +5,8 @@ def msg_bin_conversion():
     # The string is then split into a list
     msg_bin=(" ".join(f"{ord(i):08b}" for i in msg)).split(sep=" ")
     print(msg_bin)
+    bin_msg_conversion(msg_bin)
 #msg_bin_conversion()
-
-#def bin_msg_conversion(bin_value):
-#    msg=""
-#    for i in bin_value:
-#        msg=msg.append()
 
 def bin_decimal_conversion(x):
     c=7
@@ -18,5 +14,13 @@ def bin_decimal_conversion(x):
     for i in x:
         decimal=decimal+(int(i)*(2**c))
         c-=1
-    print(decimal)
-bin_decimal_conversion("01001000")
+    return decimal
+
+def bin_msg_conversion(bin_value):
+    msg_list=[]
+    for i in bin_value:
+        msg_list.append(chr(bin_decimal_conversion(i)))
+    msg="".join(msg_list)
+    print("converted : ",msg)
+
+msg_bin_conversion()
