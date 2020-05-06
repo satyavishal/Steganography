@@ -42,10 +42,17 @@ def bin_msg_conversion(bin_value):
     msg="".join(msg_list)
     print("converted : ",msg)
 
-def img_data_extraction(file_name):
+#Converts the modified pixel data into the  final Image
+def pixel_img_conversion(pixel,im):
+    img_out=Image.new(im.mode,im.size) #creating a new image object
+    img_out.putdata(pixel)
+    img_out.save('test_out.jpg')
+
+#Extracts the pixel values from the given image file
+def img_pixel_extraction(file_name):
     #im= Image.open('./testing_1.jpg')
     im=Image.open(file_name)
     pix_val = list(im.getdata())
     #print(pix_val)
-    return pix_val
-img_data_extraction('./testing_1.jpg')
+    pixel_img_conversion(pix_val,im)
+img_pixel_extraction('./testing_1.jpg')
