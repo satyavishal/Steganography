@@ -1,3 +1,4 @@
+from PIL import Image
 #Takes integer as input and returns an 8bit binary value
 def decimal_bin_conversion(x):
     l=[]
@@ -23,7 +24,6 @@ def msg_bin_conversion():
     print(msg_bin)
     #print(msg_bin2)
     #bin_msg_conversion(msg_bin)
-msg_bin_conversion()
 
 #Takes 8 bit binary as input and returns the decimal equivalent which is the ACSII value
 def bin_decimal_conversion(x):
@@ -41,3 +41,11 @@ def bin_msg_conversion(bin_value):
         msg_list.append(chr(bin_decimal_conversion(i)))
     msg="".join(msg_list)
     print("converted : ",msg)
+
+def img_data_extraction(file_name):
+    #im= Image.open('./testing_1.jpg')
+    im=Image.open(file_name)
+    pix_val = list(im.getdata())
+    #print(pix_val)
+    return pix_val
+img_data_extraction('./testing_1.jpg')
