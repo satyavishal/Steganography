@@ -149,7 +149,7 @@ def initializer():
         """decoder code"""
         img_name=str(input("Enter the name of the image with the extention: "))
         img_pixel_list= img_pixel_extraction(img_name)
-        msg_bin=decoder(img_pixel_list)
+        msg_bin=decode(img_pixel_list)
         bin_msg_conversion(msg_bin)
     elif choice == '5':
         exit()
