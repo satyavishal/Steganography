@@ -47,13 +47,13 @@ def bin_decimal_conversion(x):
         c-=1
     return decimal
 
-#Takes the List of decimal equivalent of the characters of decoded Image and returns the message
+#Takes the List of binary equivalent of the characters of decoded Image and returns the message
 def bin_msg_conversion(bin_value):
     msg_list=[]
     for i in bin_value:
         msg_list.append(chr(bin_decimal_conversion(i)))
     msg="".join(msg_list)
-    print("converted : ",msg)
+    print("Decoded message:\n ",msg)
 
 #Converts the modified pixel data into the  final Image
 def pixel_img_conversion(img_name,pixel,im):
@@ -147,6 +147,10 @@ def initializer():
         #pixel_img_conversion(img_out_name, img_pixel_list_out, im)
     elif choice == '0':
         """decoder code"""
+        img_name=str(input("Enter the name of the image with the extention: "))
+        img_pixel_list= img_pixel_extraction(img_name)
+        msg_bin=decoder(img_pixel_list)
+        bin_msg_conversion(msg_bin)
     elif choice == '5':
         exit()
     else:
