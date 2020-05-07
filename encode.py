@@ -1,7 +1,9 @@
-msg=['01101000','01101001']
-pix=[(33, 5, 45), (33, 5, 45), (34, 6, 46), (34, 6, 46), (34, 6, 46), (34, 6, 46), (33, 5, 45), (33, 5, 45), (33, 7, 46), (33, 7, 46), (33, 7, 46), (32, 6, 45), (32, 6, 45), (32, 6, 45), (31, 5, 44), (31, 5, 44), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45)]
-print(msg)
-print(pix[0:6])
+#msg=['01101000','01101001']
+#pix=[(33, 5, 45), (33, 5, 45), (34, 6, 46), (34, 6, 46), (34, 6, 46), (34, 6, 46), (33, 5, 45), (33, 5, 45), (33, 7, 46), (33, 7, 46), (33, 7, 46), (32, 6, 45), (32, 6, 45), (32, 6, 45), (31, 5, 44), (31, 5, 44), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45)]
+#print(msg)
+#print(pix[0:6])
+
+#Encodes the given binary data into the pixel data. modifies the list as list is  passed by using call by referenc
 def encoder(bin_list, pixel_list):
     pos=0
     length=len(bin_list)
@@ -65,5 +67,5 @@ def encoder(bin_list, pixel_list):
         #print(pos, character, length)
     #print(pos)
 
-encoder(msg,pix)
-print(pix[0:6])
+#encoder(msg,pix)
+#print(pix[0:6])

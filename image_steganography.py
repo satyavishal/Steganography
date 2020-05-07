@@ -1,5 +1,7 @@
 from PIL import Image
 from os import system,name
+#from decode import *
+from encode import *
 import time
 
 #Clears the console screen
@@ -10,6 +12,35 @@ def clear():
     #For mac os and linux
     else:
         _=system('clear')
+
+def decode(pix):
+    msg_bin=[]
+    pos=0
+    while True:
+        bin=[]
+        flag=0
+        for i in range(0,3):
+            c=0
+            for j in list(pix[pos]):
+                c+=1
+                if(i==2 and c==3 ):
+                    if (j%2!=0):
+                        flag=1
+                        break
+                else:
+                    if(j%2 == 0):
+                        bin.append('0')
+                    else:
+                        bin.append('1')
+
+            pos+=1
+            if(flag==1):
+                break
+
+        msg_bin.append("".join(bin))
+        if(flag==1):
+            break
+    return msg_bin
 
 #Takes integer as input and returns an 8bit binary value
 def decimal_bin_conversion(x):
@@ -144,11 +175,12 @@ def initializer():
         print(msg_bin_list[1])
         print(img_pixel_list[3:6])
         print(img_pixel_list_out[3:6])"""
-        #pixel_img_conversion(img_out_name, img_pixel_list_out, im)
+        pixel_img_conversion(img_out_name, img_pixel_list_out, im)
     elif choice == '0':
         """decoder code"""
         img_name=str(input("Enter the name of the image with the extention: "))
         img_pixel_list= img_pixel_extraction(img_name)
+        #print(img_pixel_list[0:20])
         msg_bin=decode(img_pixel_list)
         bin_msg_conversion(msg_bin)
     elif choice == '5':
