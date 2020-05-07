@@ -82,12 +82,12 @@ def encoder(bin_list, pixel_list):
         slice_max=2
 
         # loop is used to iterate a set of 4 pixels for 1 byte ie for each character
-        for i in range(0,4):
+        for i in range(0,3):
             cg=list(pixel_list[pos])
             cg_pos=0
 
             # this block is executed for 1st 3 pixel packets in the set
-            if i!=3:
+            if i!=2:
                 for bit in character[slice_min:slice_max]:
                     if bit == 1:
                         if(cg[cg_pos]%2==0):
@@ -98,14 +98,14 @@ def encoder(bin_list, pixel_list):
                     cg_pos+=1
                 pixel_list[pos]=tuple(cg)
                 slice_min+=3
-                if i == 2:
+                if i == 1:
                     slice_max+=2
                 else:
                     slice_max+=3
                 pos+=1
 
             # this block is executed for the last pixel packet in the set
-            elif(i == 3):
+            elif(i == 2):
                 for bit in character[slice_min:slice_max]:
                     if bit == 1:
                         if(cg[cg_pos]%2==0):
@@ -125,7 +125,7 @@ def encoder(bin_list, pixel_list):
                 pos+=1
 
 
-
+#This controls the whole programs execution flow
 def initializer():
     clear()
     choice=input("Enter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
@@ -135,11 +135,15 @@ def initializer():
         img_out_name=str(input("Enter the name of the encoded image with the extention: "))
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
+        print(img_pixel_list[:20])
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
+        """print(msg_bin_list[0])
+        print(img_pixel_list[0:3])
+        print(img_pixel_list_out[0:3])
         print(msg_bin_list[1])
-        print(img_pixel_list[4:8])
-        print(img_pixel_list_out[4:8])
+        print(img_pixel_list[3:6])
+        print(img_pixel_list_out[3:6])"""
         #pixel_img_conversion(img_out_name, img_pixel_list_out, im)
     elif choice == '0':
         """decoder code"""
