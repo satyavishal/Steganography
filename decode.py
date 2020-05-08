@@ -1,6 +1,6 @@
-pixel=[(31, 5, 44), (32, 6, 45), (32, 6, 45), (33, 7, 46), (33, 7, 46), (32, 6, 45), (32, 6, 45), (31, 5, 44), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43)]
+#pixel=[(32, 5, 45), (32, 4, 45), (33, 6, 46), (34, 5, 45), (33, 6, 45), (34, 5, 46), (32, 5, 45), (32, 4, 44), (33, 7, 46), (32, 7, 45), (32, 7, 46), (31, 5, 44), (32, 5, 45), (32, 6, 45), (30, 5, 44), (30, 5, 43), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (32, 6, 45), (31, 6, 45), (31, 6, 45), (31, 6, 45), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (30, 5, 44), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (27, 5, 43), (28, 6, 44), (28, 6, 44), (28, 6, 44)]
 
-
+"""
 #Takes 8 bit binary as input and returns the decimal equivalent which is the ACSII value
 def bin_decimal_conversion(x):
     c=7
@@ -18,7 +18,7 @@ def bin_msg_conversion(bin_value):
         msg_list.append(chr(bin_decimal_conversion(i)))
     msg="".join(msg_list)
     print("Decoded message:\n ",msg)
-
+"""
 
 # Decodes the msg from the given list of pixel data and returns the msg binary data
 def decode(pix):
@@ -29,7 +29,7 @@ def decode(pix):
         bin=[]
         flag=0
         for i in range(0,3):
-            print(pos)
+            #print(pos)
             c=0
             z=list(pix[pos])
             for j in z:
@@ -53,8 +53,8 @@ def decode(pix):
         msg_bin.append("".join(bin))
         if(flag==1):
             break
-    #return msg_bin
+    return msg_bin
     #print(msg_bin)
-    bin_msg_conversion(msg_bin)
+    #bin_msg_conversion(msg_bin)
 
-decode(pixel)
+#decode(pixel)
