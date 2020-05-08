@@ -1,6 +1,6 @@
 from PIL import Image
 from os import system,name
-#from decode import *
+from decode import *
 from encode import *
 import time
 
@@ -12,35 +12,6 @@ def clear():
     #For mac os and linux
     else:
         _=system('clear')
-
-def decode(pix):
-    msg_bin=[]
-    pos=0
-    while True:
-        bin=[]
-        flag=0
-        for i in range(0,3):
-            c=0
-            for j in list(pix[pos]):
-                c+=1
-                if(i==2 and c==3 ):
-                    if (j%2!=0):
-                        flag=1
-                        break
-                else:
-                    if(j%2 == 0):
-                        bin.append('0')
-                    else:
-                        bin.append('1')
-
-            pos+=1
-            if(flag==1):
-                break
-
-        msg_bin.append("".join(bin))
-        if(flag==1):
-            break
-    return msg_bin
 
 #Takes integer as input and returns an 8bit binary value
 def decimal_bin_conversion(x):
@@ -102,60 +73,6 @@ def img_pixel_extraction(file_name):
     return pix_val,im
 #img_pixel_extraction('./testing_1.jpg')
 
-#Encodes the given message and returns the modified Pixel List
-def encoder(bin_list, pixel_list):
-    pos=0
-    length=len(bin_list)
-
-    # 1st loop iterates the 8 bit binaru elements in the bin_list
-    for character in bin_list:
-        slice_min=0
-        slice_max=2
-
-        # loop is used to iterate a set of 4 pixels for 1 byte ie for each character
-        for i in range(0,3):
-            cg=list(pixel_list[pos])
-            cg_pos=0
-
-            # this block is executed for 1st 3 pixel packets in the set
-            if i!=2:
-                for bit in character[slice_min:slice_max]:
-                    if bit == 1:
-                        if(cg[cg_pos]%2==0):
-                            cg[cg_pos]-=1
-                    else:
-                        if(cg[cg_pos]%2 != 0):
-                            cg[cg_pos]-=1
-                    cg_pos+=1
-                pixel_list[pos]=tuple(cg)
-                slice_min+=3
-                if i == 1:
-                    slice_max+=2
-                else:
-                    slice_max+=3
-                pos+=1
-
-            # this block is executed for the last pixel packet in the set
-            elif(i == 2):
-                for bit in character[slice_min:slice_max]:
-                    if bit == 1:
-                        if(cg[cg_pos]%2==0):
-                            cg[cg_pos]-=1
-                    else:
-                        if(cg[cg_pos]%2 != 0):
-                            cg[cg_pos]-=1
-                    cg_pos+=1
-                cg_pos+=1
-
-                if(cg[cg_pos]%2!=0 and 3*(pos+1) < length ):
-                    cg[cg_pos]-=1
-                elif(cg[cg_pos]%2 == 0 and 3*(pos+1) == length):
-                    cg[cg_pos]-=1
-
-                pixel_list[pos]=tuple(cg)
-                pos+=1
-
-
 #This controls the whole programs execution flow
 def initializer():
     clear()
@@ -166,9 +83,12 @@ def initializer():
         img_out_name=str(input("Enter the name of the encoded image with the extention: "))
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
-        print(img_pixel_list[:20])
+        print(img_pixel_list)
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
+        f = open( 'file2.py', 'w' )
+        f.write(str(img_pixel_list_out))
+        f.close()
         """print(msg_bin_list[0])
         print(img_pixel_list[0:3])
         print(img_pixel_list_out[0:3])
@@ -179,10 +99,20 @@ def initializer():
     elif choice == '0':
         """decoder code"""
         img_name=str(input("Enter the name of the image with the extention: "))
-        img_pixel_list= img_pixel_extraction(img_name)
+        img_pixel_tuple= img_pixel_extraction(img_name)
+        f = open( 'file3.py', 'w' )
+        f.write(str(img_pixel_tuple))
+        f.close()
+        img_pixel_list=list(img_pixel_tuple)
+        #decode(img_pixel_list)
+        f = open( 'file.py', 'w' )
+        f.write(str(img_pixel_list[0]))
+        f.close()
+        #print(type(img_pixel_tuple))
+        #print(type(img_pixel_list))
         #print(img_pixel_list[0:20])
-        msg_bin=decode(img_pixel_list)
-        bin_msg_conversion(msg_bin)
+        #msg_bin=decode(img_pixel_list)
+        #bin_msg_conversion(msg_bin)
     elif choice == '5':
         exit()
     else:
