@@ -28,95 +28,17 @@ def decimal_bin_conversion(x):
 
 # function converts the message to binary value list
 def msg_bin_conversion(msg):
+    #msg=str(input("Enter your message here: \n"))
+    #converts each character to the bin of its acsii value and joins it to the string.
+    # The string is then split into a list
+    #msg_bin2=(" ".join(f"{ord(i):08b}" for i in msg)).split(sep=" ")
     msg_bin=[]
     for i in msg:
         msg_bin.append(decimal_bin_conversion(ord(i)))
     return msg_bin
-
-#Encodes the given binary data to the pixel data.Modifies the list as list is
-#passed by using call by reference ie It does'nt return anything.
-def encoder(bin_list, pixel_list):
-    pos=0
-    length=len(bin_list)
-
-    # 1st loop iterates the 8 bit binaru elements in the bin_list
-    for character in bin_list: #refers to each bit
-        slice_min=0
-        slice_max=3
-        cg=list(pixel_list[pos])
-
-        # loop is used to iterate a set of 3 pixels for 1 byte ie for each character
-        for i in range(0,3): # refers to the pixel
-            cg=list(pixel_list[pos])
-            cg_pos=0
-
-            # this block is executed for 1st 3 pixel packets in the set
-            if i!=2:
-                for bit in character[slice_min:slice_max]:
-                    #print(character[slice_min:slice_max])
-                    if bit == '1':
-                        if(cg[cg_pos]%2==0):
-                            cg[cg_pos]-=1
-                    else:
-                        if(cg[cg_pos]%2 != 0):
-                            cg[cg_pos]-=1
-                    cg_pos+=1
-                pixel_list[pos]=tuple(cg)
-                slice_min+=3
-                if i == 1:
-                    slice_max+=2
-                else:
-                    slice_max+=3
-                pos+=1
-
-            # this block is executed for the last pixel packet in the set
-            elif(i == 2):
-                for bit in character[slice_min:slice_max]:
-                    if bit == '1':
-                        if(cg[cg_pos]%2==0):
-                            cg[cg_pos]-=1
-                    else:
-                        if(cg[cg_pos]%2 != 0):
-                            cg[cg_pos]-=1
-                    cg_pos+=1
-
-                if(cg[cg_pos]%2!=0 and (pos+1)//3 < length ):
-                    cg[cg_pos]-=1
-                elif(cg[cg_pos]%2 == 0 and (pos+1)//3 == length):
-                    cg[cg_pos]-=1
-
-                pixel_list[pos]=tuple(cg)
-                pos+=1
-
-# Decodes the msg from the given list of pixel data and returns the msg binary data
-def decode(pix):
-    #pix=pixel[0]
-    msg_bin=[]
-    pos=0
-    while True:
-        bin=[]
-        flag=0
-        for i in range(0,3):
-            c=0
-            z=list(pix[pos])
-            for j in z:
-                c+=1
-                if(i==2 and c==3 ):
-                    if (j%2!=0):
-                        flag=1
-                        break
-                else:
-                    if(j%2 == 0):
-                        bin.append('0')
-                    else:
-                        bin.append('1')
-            pos+=1
-            if(flag==1):
-                break
-        msg_bin.append("".join(bin))
-        if(flag==1):
-            break
-    return msg_bin
+    #print(msg_bin)
+    #print(msg_bin2)
+    #bin_msg_conversion(msg_bin)
 
 #Encodes the given binary data to the pixel data.Modifies the list as list is
 #passed by using call by reference ie It does'nt return anything.
@@ -229,22 +151,24 @@ def pixel_img_conversion(img_name,pixel,im):
 
 #Extracts the pixel values from the given image file
 def img_pixel_extraction(file_name):
+    #im= Image.open('./testing_1.jpg')
     im=Image.open(file_name)
     pix_val = list(im.getdata())
+    #print(pix_val)
+    #pixel_img_conversion(pix_val,im)
     return pix_val,im
 
 #This controls the whole programs execution flow
 def initializer():
     clear()
-    choice=input("Simple Image Steganography\nEnter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
-
-    #Encoding the image
+    choice=input("Enter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
     if choice == '1':
         msg=str(input("Enter the message you want to encode: \n"))
         img_name=str(input("Enter the name of the image with the extention: "))
         img_out_name=str(input("Enter the name of the encoded image with the extention: "))
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
+        #print(img_pixel_list)
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
         pixel_img_conversion(img_out_name, img_pixel_list_out, im)
@@ -258,8 +182,8 @@ def initializer():
         print(img_pixel_list[3:6])
         print(img_pixel_list_out[3:6])"""
 
-    #Decoding the image
     elif choice == '0':
+        """decoder code"""
         img_name=str(input("Enter the name of the image without the extention: "))
         img_pixel_list,im= img_pixel_extraction(img_name)
         #f = open( 'file3.py', 'w' )
@@ -275,12 +199,8 @@ def initializer():
         #print(img_pixel_list[0:20])
         msg_bin=decode(img_pixel_list)
         bin_msg_conversion(msg_bin)
-
-    #Exit
     elif choice == '5':
         exit()
-
-    #Invalid entry
     else:
         print("Invalid entry pls try again is 3sec")
         time.sleep(3)
