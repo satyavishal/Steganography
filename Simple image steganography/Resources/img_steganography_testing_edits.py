@@ -1,7 +1,7 @@
 from PIL import Image
 from os import system,name
-from decode import *
-from encode import *
+#from decode import *
+#from encode import *
 import time
 
 #Clears the console screen
@@ -40,6 +40,91 @@ def msg_bin_conversion(msg):
     #print(msg_bin2)
     #bin_msg_conversion(msg_bin)
 
+#Encodes the given binary data to the pixel data.Modifies the list as list is
+#passed by using call by reference ie It does'nt return anything.
+def encoder(bin_list, pixel_list):
+    pos=0
+    length=len(bin_list)
+
+    # 1st loop iterates the 8 bit binaru elements in the bin_list
+    for character in bin_list: #refers to each bit
+        slice_min=0
+        slice_max=3
+        cg=list(pixel_list[pos])
+
+        # loop is used to iterate a set of 3 pixels for 1 byte ie for each character
+        for i in range(0,3): # refers to the pixel
+            cg=list(pixel_list[pos])
+            cg_pos=0
+
+            # this block is executed for 1st 3 pixel packets in the set
+            if i!=2:
+                for bit in character[slice_min:slice_max]:
+                    #print(character[slice_min:slice_max])
+                    if bit == '1':
+                        if(cg[cg_pos]%2==0):
+                            cg[cg_pos]-=1
+                    else:
+                        if(cg[cg_pos]%2 != 0):
+                            cg[cg_pos]-=1
+                    cg_pos+=1
+                pixel_list[pos]=tuple(cg)
+                slice_min+=3
+                if i == 1:
+                    slice_max+=2
+                else:
+                    slice_max+=3
+                pos+=1
+
+            # this block is executed for the last pixel packet in the set
+            elif(i == 2):
+                for bit in character[slice_min:slice_max]:
+                    if bit == '1':
+                        if(cg[cg_pos]%2==0):
+                            cg[cg_pos]-=1
+                    else:
+                        if(cg[cg_pos]%2 != 0):
+                            cg[cg_pos]-=1
+                    cg_pos+=1
+
+                if(cg[cg_pos]%2!=0 and (pos+1)//3 < length ):
+                    cg[cg_pos]-=1
+                elif(cg[cg_pos]%2 == 0 and (pos+1)//3 == length):
+                    cg[cg_pos]-=1
+
+                pixel_list[pos]=tuple(cg)
+                pos+=1
+
+# Decodes the msg from the given list of pixel data and returns the msg binary data
+def decode(pix):
+    #pix=pixel[0]
+    msg_bin=[]
+    pos=0
+    while True:
+        bin=[]
+        flag=0
+        for i in range(0,3):
+            c=0
+            z=list(pix[pos])
+            for j in z:
+                c+=1
+                if(i==2 and c==3 ):
+                    if (j%2!=0):
+                        flag=1
+                        break
+                else:
+                    if(j%2 == 0):
+                        bin.append('0')
+                    else:
+                        bin.append('1')
+            pos+=1
+            if(flag==1):
+                break
+        msg_bin.append("".join(bin))
+        if(flag==1):
+            break
+    return msg_bin
+
 #Takes 8 bit binary as input and returns the decimal equivalent which is the ACSII value
 def bin_decimal_conversion(x):
     c=7
@@ -49,7 +134,8 @@ def bin_decimal_conversion(x):
         c-=1
     return decimal
 
-#Takes the List of binary equivalent of the characters of decoded Image and returns the message
+#Takes the List of binary equivalent of the characters of
+#decoded Image and prints the message on the console
 def bin_msg_conversion(bin_value):
     msg_list=[]
     for i in bin_value:
@@ -71,7 +157,6 @@ def img_pixel_extraction(file_name):
     #print(pix_val)
     #pixel_img_conversion(pix_val,im)
     return pix_val,im
-#img_pixel_extraction('./testing_1.jpg')
 
 #This controls the whole programs execution flow
 def initializer():
@@ -87,9 +172,9 @@ def initializer():
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
         pixel_img_conversion(img_out_name, img_pixel_list_out, im)
-        f = open( 'file_encoded_data.py', 'w' )
-        f.write(str(img_pixel_list_out))
-        f.close()
+        #f = open( 'file_encoded_data.py', 'w' )
+        #f.write(str(img_pixel_list_out))
+        #f.close()
         """print(msg_bin_list[0])
         print(img_pixel_list[0:3])
         print(img_pixel_list_out[0:3])
@@ -106,9 +191,9 @@ def initializer():
         #f.close()
         #img_pixel_list=list(img_pixel_tuple)
         #decode(img_pixel_list)
-        f = open( 'file.py', 'w' )
-        f.write(str(img_pixel_list))
-        f.close()
+        #f = open( 'file.py', 'w' )
+        #f.write(str(img_pixel_list))
+        #f.close()
         #print(type(img_pixel_tuple))
         #print(type(img_pixel_list))
         #print(img_pixel_list[0:20])
