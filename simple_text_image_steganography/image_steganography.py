@@ -151,7 +151,7 @@ def bin_msg_conversion(bin_value):
     for i in bin_value:
         msg_list.append(chr(bin_decimal_conversion(i)))
     msg="".join(msg_list)
-    print("Decoded message:\n ",msg)
+    print("Decoded message:\n",msg)
 
 #Converts the modified pixel data into the  final Image
 def pixel_img_conversion(img_name,pixel,im):
