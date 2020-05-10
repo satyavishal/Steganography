@@ -160,7 +160,7 @@ def initializer():
         img_pixel_list,im= img_pixel_extraction(img_name)
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
-        pixel_img_conversion(img_out_name, img_pixel_list_out, im)
+        pixel_img_conversion(img_out_name+".png", img_pixel_list_out, im)
 
     #Decoding the image
     elif choice == '0':
