@@ -1,6 +1,9 @@
 from PIL import Image
 from os import system,name
 import time
+import tkinter as tk
+from tkinter import filedialog
+
 
 #Clears the console screen
 def clear():
@@ -10,6 +13,22 @@ def clear():
     #For mac os and linux
     else:
         _=system('clear')
+
+#opens a dialog box to select an image
+def select_img():
+    root=tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename(initialdir="C:",title="Select an image",
+    filetypes=(("jpg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+    return file_path
+
+#opens a dialog box to save a file
+def Save_file():
+    root=tk.Tk()
+    root.withdraw()
+    file_path = filedialog.asksaveasfilename(title="Save the image",
+    defaultextension=".png",initialdir="C:")
+    return file_path
 
 #Takes integer as input and returns an 8bit binary value
 def decimal_bin_conversion(x):
@@ -154,17 +173,24 @@ def initializer():
     #Encoding the image
     if choice == '1':
         msg=str(input("Enter the message you want to encode: \n"))
-        img_name=str(input("Enter the name of the image with the extention: "))
-        img_out_name=str(input("Enter the name of the encoded image without the extention: "))
+        print("Select the image you want to Encode in the dialog box")
+        time.sleep(3)
+        img_name=select_img()
+        print("Select the location and file name of your encoded image without the extention")
+        time.sleep(3)
+        img_out_name=Save_file()
+
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
-        pixel_img_conversion(img_out_name+".png", img_pixel_list_out, im)
+        pixel_img_conversion(img_out_name, img_pixel_list_out, im)
 
     #Decoding the image
     elif choice == '0':
-        img_name=str(input("Enter the name of the image without the extention: "))
+        print("Select the image you want to Decode in the dialog box")
+        time.sleep(3)
+        img_name=select_img()
         img_pixel_list,im= img_pixel_extraction(img_name)
         msg_bin=decode(img_pixel_list)
         bin_msg_conversion(msg_bin)
