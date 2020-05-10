@@ -3,7 +3,7 @@ from os import system,name
 import time
 import tkinter as tk
 from tkinter import filedialog
-
+import os
 
 #Clears the console screen
 def clear():
@@ -18,8 +18,8 @@ def clear():
 def select_img():
     root=tk.Tk()
     root.withdraw()
-    file_path = filedialog.askopenfilename(initialdir="C:",title="Select an image",
-    filetypes=(("jpg files","*.jpg"),("png files","*.png"),("all files","*.*")))
+    file_path = filedialog.askopenfilename(initialdir="S:\\Projects",title="Select an image",
+    filetypes=(("all files","*.*"),("jpg files","*.jpg"),("png files","*.png")))
     return file_path
 
 #opens a dialog box to save a file
@@ -27,7 +27,7 @@ def Save_file():
     root=tk.Tk()
     root.withdraw()
     file_path = filedialog.asksaveasfilename(title="Save the image",
-    defaultextension=".png",initialdir="C:")
+    defaultextension=".png",initialdir="S:\\Projects")
     return file_path
 
 #Takes integer as input and returns an 8bit binary value
@@ -163,7 +163,18 @@ def pixel_img_conversion(img_name,pixel,im):
 def img_pixel_extraction(file_name):
     im=Image.open(file_name)
     pix_val = list(im.getdata())
-    return pix_val,im
+    if len(pix_val[0])==4:
+        rbga_img=Image.open(file_name)
+        rbga_img.load()
+        new_im=Image.new("RGB",rbga_img.size,(255,255,255))
+        new_im.paste(rbga_img, mask=rbga_img.split()[3])
+        new_im.save(".\\conv_dump\\sample.jpg", "JPEG", quality=100)
+        im2=Image.open(".\\conv_dump\\sample.jpg")
+        pix_val2 = list(im2.getdata())
+        os.remove(".\\conv_dump\\sample.jpg")
+        return pix_val2,im2
+    else:
+        return pix_val,im
 
 #This controls the whole programs execution flow
 def initializer():
