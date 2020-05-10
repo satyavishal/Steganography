@@ -155,16 +155,16 @@ def initializer():
     if choice == '1':
         msg=str(input("Enter the message you want to encode: \n"))
         img_name=str(input("Enter the name of the image with the extention: "))
-        img_out_name=str(input("Enter the name of the encoded image with the extention: "))
+        img_out_name=str(input("Enter the name of the encoded image without the extention: "))
         msg_bin_list=msg_bin_conversion(msg)
         img_pixel_list,im= img_pixel_extraction(img_name)
         img_pixel_list_out=img_pixel_list.copy()
         encoder(msg_bin_list,img_pixel_list_out)
-        pixel_img_conversion(img_out_name, img_pixel_list_out, im)
+        pixel_img_conversion(img_out_name+".png", img_pixel_list_out, im)
 
     #Decoding the image
     elif choice == '0':
-        img_name=str(input("Enter the name of the image without the extention: "))
+        img_name=str(input("Enter the name of the image with the extention: "))
         img_pixel_list,im= img_pixel_extraction(img_name)
         msg_bin=decode(img_pixel_list)
         bin_msg_conversion(msg_bin)
