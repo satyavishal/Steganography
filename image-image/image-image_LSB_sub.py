@@ -175,7 +175,7 @@ def initializer(num):
 
         #selecting the cover image
         print("Note: Cover image size should be >= secret image size ")
-        print("The secret image size you selected is: ",secret_im.size())
+        print("The secret image size you selected is: ",secret_im.size)
         print("Select the 'Cover image' you want the 'Secret image' to be hidden in after the 'dialog box' opens:")
         time.sleep(8)
         cover_img_name=select_img()
