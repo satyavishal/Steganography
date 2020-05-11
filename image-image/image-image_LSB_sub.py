@@ -24,7 +24,6 @@ Note:
 
 """
 
-
 #Clears the console screen
 def clear():
     #For windows
@@ -54,14 +53,7 @@ def save_img():
 def img_pixel_extraction(file_name):
     im=Image.open(file_name)
     pix_val =im.load() #list(im.getdata())
-    print(pix_val)
     return pix_val,im
-
-#Converts the modified pixel data into the  final Image and saves it
-def pixel_img_conversion(img_name,img_out):
-    img_out=Image.new(im.mode,im.size) #creating a new image object
-    img_out.putdata(pixel)
-    img_out.save(img_name)
 
 #Checing the size of the two images
 def size_check(cover,secret):
@@ -92,7 +84,7 @@ def bin_decimal_conversion(x):
         c-=1
     return decimal
 
-#Merges the RBG values ie input is 2 pixles and output is the merged pixel
+#Merges the RBG values ie input is the rbg values of 2 pixles and output is the merged pixel rbg values
 def merge_rbg(cov,sec):
     for i in range(3):
         cov[i]=decimal_bin_conversion(cov[i])
@@ -110,7 +102,7 @@ def merge_rbg(cov,sec):
 
     return tuple(merged_rbg_pix)
 
-#Merges the cover and secret images
+#Merges the cover and secret images and saves the merged Image
 def merge(cover_pix,cover_im,secret_pix,secret_im,img_name):
     img_out=Image.new(cover_im.mode,cover_im.size) #creating a new image object
     pixel_map=img_out.load()
@@ -125,7 +117,7 @@ def merge(cover_pix,cover_im,secret_pix,secret_im,img_name):
 
     img_out.save(img_name)
 
-#extracts the rbg values
+#extracts the rbg values of the secret image
 def extract_rbg(pix):
     for i in range(3):
         pix[i]=decimal_bin_conversion(pix[i])
@@ -141,7 +133,7 @@ def extract_rbg(pix):
 
     return tuple(pix_out)
 
-#extracts the secret image pixel data
+#extracts the secret image pixel data and saves the image
 def extract(merged_pix,merged_im,extract_name):
     #pixel_map=merged_pix.load()
     img_out=Image.new(merged_im.mode,merged_im.size) #creating a new image object
@@ -170,19 +162,31 @@ def initializer(num):
     #Merging the images
     if choice == '1':
         #selecting the secret image
-        print("Note: Cover image is the image ")
         print("Select the 'Secret image' you want to hide after the 'dialog box' opens:")
         time.sleep(5)
         secret_img_name=select_img()
+        #Checking for valid name
+        if secret_img_name == "":
+            print("please select an image!! retry again in 3sec")
+            time.sleep(3)
+            initializer(0)
+        #getting the pixel data
+        secret_pix_data,secret_im=img_pixel_extraction(secret_img_name)
 
         #selecting the cover image
+        print("Note: Cover image size should be >= secret image size ")
+        print("The secret image size you selected is: ",secret_im.size())
         print("Select the 'Cover image' you want the 'Secret image' to be hidden in after the 'dialog box' opens:")
-        time.sleep(5)
+        time.sleep(8)
         cover_img_name=select_img()
-
+        #Checking for valid name
+        if cover_img_name == "":
+            print("please select an image!! retry again in 3sec")
+            time.sleep(3)
+            initializer(0)
         #getting the pixel data
         cover_pix_data,cover_im=img_pixel_extraction(cover_img_name)
-        secret_pix_data,secret_im=img_pixel_extraction(secret_img_name)
+
 
         # Checking the image sizes and redirecting accordingly
         if size_check(cover_im,secret_im):
@@ -196,20 +200,34 @@ def initializer(num):
         print("Select the location and image name of the merged image without the extention:")
         time.sleep(5)
         save_img_name=save_img()
+        #Checking for valid name
+        if save_img_name == "":
+            print("please enter the name and location for the extracted image!! retry again in 3sec")
+            time.sleep(3)
+            initializer(0)
 
-        #print(type(cover_im.size[0]),cover_im.size[1],secret_im.size[0],secret_im.size[1])
         #Merging the images
         merge(cover_pix_data,cover_im,secret_pix_data,secret_im,save_img_name)
 
-    #Decoding the image
+    #Extracting the secret image
     elif choice == '0':
+        #Selecting the stego object
         print("Select the image you want to Decode to extract the secret image after the 'dialog box' opens")
         time.sleep(5)
         merged_img_name=select_img()
+        if merged_img_name == "":
+            print("please select an image, retry again in 3sec")
+            time.sleep(3)
+            initializer(0)
 
+        #Selecting the save location of the extracted secret Image
         print("Select the save location of the extracted image after the 'dialog box' opens")
         time.sleep(5)
         extract_name=save_img()
+        if extract_name == "":
+            print("please select an image!! retry again in 3sec")
+            time.sleep(3)
+            initializer(0)
 
         merged_pix,merged_im= img_pixel_extraction(merged_img_name)
 
@@ -227,6 +245,4 @@ def initializer(num):
         time.sleep(3)
         initializer(0)
 
-
-#print(info)
 initializer(1)
