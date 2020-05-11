@@ -183,7 +183,7 @@ def initializer():
 
     #Encoding the image
     if choice == '1':
-        msg=str(input("Enter the message you want to encode: \n"))
+        msg=str(input("Enter the message you want to encode:\n"))
         print("Select the image you want to Encode in the dialog box")
         time.sleep(3)
         img_name=select_img()
