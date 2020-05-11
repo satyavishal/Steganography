@@ -143,7 +143,7 @@ def extract_rbg(pix):
 
 #extracts the secret image pixel data
 def extract(merged_pix,merged_im,extract_name):
-    pixel_map=merged_pix.load()
+    #pixel_map=merged_pix.load()
     img_out=Image.new(merged_im.mode,merged_im.size) #creating a new image object
     pixel_map_new=img_out.load()
     pix_size=merged_im.size
@@ -151,11 +151,11 @@ def extract(merged_pix,merged_im,extract_name):
     #Iterating through each pixel
     for i in range(merged_im.size[0]):
         for j in range(merged_im.size[1]):
-            pixel_map_new[i,j]=extract_rbg(list(pixel_map[i,j]))
+            pixel_map_new[i,j]=extract_rbg(list(merged_pix[i,j]))
 
-            if pixel_map[i,j]!=(0,0,0):
+            if pixel_map_new[i,j]!=(0,0,0):
                 pix_size=(i+1,j+1)
-    img_out=img_out.crop(0,0,pix_size[0],pix_size[1])
+    img_out=img_out.crop((0,0,pix_size[0],pix_size[1]))
     img_out.save(extract_name)
 
 #This controls the whole programs execution flow
@@ -209,9 +209,9 @@ def initializer(num):
 
         print("Select the save location of the extracted image after the 'dialog box' opens")
         time.sleep(5)
-        extract_name=select_img()
+        extract_name=save_img()
 
-        merged_pix,merged_im= img_pixel_extraction(img_name)
+        merged_pix,merged_im= img_pixel_extraction(merged_img_name)
 
         exract_pix=extract(merged_pix,merged_im,extract_name)
 
