@@ -53,11 +53,11 @@ def save_img():
 #Extracts the pixel values from the given image file
 def img_pixel_extraction(file_name):
     im=Image.open(file_name)
-    pix_val =list(im.getdata())
+    pix_val =im.load() #list(im.getdata())
     print(pix_val)
     return pix_val,im
 
-#Converts the modified pixel data into the  final Image
+#Converts the modified pixel data into the  final Image and saves it
 def pixel_img_conversion(img_name,pixel,im):
     img_out=Image.new(im.mode,im.size) #creating a new image object
     img_out.putdata(pixel)
@@ -66,9 +66,9 @@ def pixel_img_conversion(img_name,pixel,im):
 #Checing the size of the two images
 def size_check(cover,secret):
     if (secret.size[0] > cover.size[0]) or (secret.size[1] > cover.size[1]):
-        return False
-    else:
         return True
+    else:
+        return False
 
 #Takes integer as input and returns an 8bit binary value
 def decimal_bin_conversion(x):
@@ -92,13 +92,52 @@ def bin_decimal_conversion(x):
         c-=1
     return decimal
 
+#Merges the RBG values ie input is 2 pixles and output is the merged pixel
+def merge_rbg(cover,secret):
+    for i in range(3):
+        cov[i]=decimal_bin_conversion(cov[i])
+        sec[i]=decimal_bin_conversion(sec[i])
+
+    r1,b1,g1=cov
+    r2,b2,g2=sec
+
+    merged_rbg_pix=[r1[:4]+r2[:4],
+                    b1[:4]+b2[:4],
+                    g1[:4]+g2[:4]]
+
+    for i in range(3):
+        merged_rbg_pix=bin_decimal_conversion(merged_rbg_pix[i])
+
+    return tuple(merged_rbg_pix)
+
+#Merges the cover and secret images
+def merge(cover_pix_list,cover_im,secret_pix_list,secret_im):
+    #Iterating through each pixel
+    for i in range(cover_im.size[0]):
+        for j in range(cover_im.size[1]):
+            rbg=(0,0,0)
+            if i < secret_im.size[0] and i < secret_im.size[1]:
+                rbg=secret_pix_list[i,j]
+                cover_pix_list[i,j]=merge_rbg(list(cover_pix_list[i,j]),list(rbg))
+
+"""
+#extracts the secret image pixel data
+def extract(merged_pix,merged_im):
+    extracted_pix=[]
+    #Iterating through each pixel
+    for i in range(merged_im.size[0]):
+        for j in range(merged_im.size[1]):
+            extracted_pix.append
+"""
+
 #This controls the whole programs execution flow
 def initializer(num):
     if num==0:
         clear()
     else:
         print(info)
-        choice=input("Image in Image Steganography\nEnter:\n '1' to merge the images\n '0' to extract the secret image\n '5' to exit\n")
+
+    choice=input("Image in Image Steganography\nEnter:\n '1' to merge the images\n '0' to extract the secret image\n '5' to exit\n")
 
     #Merging the images
     if choice == '1':
@@ -123,7 +162,7 @@ def initializer(num):
         secret_pix_data,secret_im=img_pixel_extraction(secret_img_name)
 
         # Checking the image sizes and redirecting accordingly
-        if !size_check(cover_im,secret_im):
+        if size_check(cover_im,secret_im):
             print("Cover image is smaller than the Secret image")
             if int(input("Select '1' to retry and '0' to exit")) == 1:
                 initializer(0)
@@ -131,7 +170,7 @@ def initializer(num):
                 sys.exit()
 
         #Merging the images
-        merged_pix=merge(cover_img_name,secret_img_name)
+        merged_pix=merge(cover_pix_data,cover_im,secret_img_data,secret_im)
 
         #saving the merged image
         pixel_img_conversion(save_img_name,merged_pix,cover_im)
@@ -148,7 +187,8 @@ def initializer(num):
 
         merged_pix,merged_im= img_pixel_extraction(img_name)
 
-        exract_pix=extract(img_pixel_list)
+        exract_pix=extract(merged_pix,merged_im)
+
         pixel_img_conversion(extract_name,exract_pix,merged_im)
 
     #Exit
@@ -162,5 +202,5 @@ def initializer(num):
         initializer()
 
 
-print(info)
-#initializer(1)
+#print(info)
+initializer(1)
