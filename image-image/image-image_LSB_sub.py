@@ -58,10 +58,10 @@ def img_pixel_extraction(file_name):
     return pix_val,im
 
 #Converts the modified pixel data into the  final Image and saves it
-def pixel_img_conversion(img_name,pixel,im):
+def pixel_img_conversion(img_name,img_out):
     img_out=Image.new(im.mode,im.size) #creating a new image object
     img_out.putdata(pixel)
-    img_out.save(img_name+".png")
+    img_out.save(img_name)
 
 #Checing the size of the two images
 def size_check(cover,secret):
@@ -93,7 +93,7 @@ def bin_decimal_conversion(x):
     return decimal
 
 #Merges the RBG values ie input is 2 pixles and output is the merged pixel
-def merge_rbg(cover,secret):
+def merge_rbg(cov,sec):
     for i in range(3):
         cov[i]=decimal_bin_conversion(cov[i])
         sec[i]=decimal_bin_conversion(sec[i])
@@ -106,29 +106,57 @@ def merge_rbg(cover,secret):
                     g1[:4]+g2[:4]]
 
     for i in range(3):
-        merged_rbg_pix=bin_decimal_conversion(merged_rbg_pix[i])
+        merged_rbg_pix[i]=bin_decimal_conversion(merged_rbg_pix[i])
 
     return tuple(merged_rbg_pix)
 
 #Merges the cover and secret images
-def merge(cover_pix_list,cover_im,secret_pix_list,secret_im):
+def merge(cover_pix,cover_im,secret_pix,secret_im,img_name):
+    img_out=Image.new(cover_im.mode,cover_im.size) #creating a new image object
+    pixel_map=img_out.load()
     #Iterating through each pixel
     for i in range(cover_im.size[0]):
         for j in range(cover_im.size[1]):
-            rbg=(0,0,0)
-            if i < secret_im.size[0] and i < secret_im.size[1]:
-                rbg=secret_pix_list[i,j]
-                cover_pix_list[i,j]=merge_rbg(list(cover_pix_list[i,j]),list(rbg))
+            if i < secret_im.size[0] and j < secret_im.size[1]:
+                #print(i,j)
+                pixel_map[i,j]=merge_rbg(list(cover_pix[i,j]),list(secret_pix[i,j]))
+            else:
+                pixel_map[i,j]=merge_rbg(list(cover_pix[i,j]),[0,0,0])
 
-"""
+    img_out.save(img_name)
+
+#extracts the rbg values
+def extract_rbg(pix):
+    for i in range(3):
+        pix[i]=decimal_bin_conversion(pix[i])
+
+    r,b,g=pix
+
+    pix_out=[r[4:]+"0000",
+             b[4:]+"0000",
+             g[4:]+"0000"]
+
+    for i in range(3):
+        pix_out[i]=bin_decimal_conversion(pix_out[i])
+
+    return tuple(pix_out)
+
 #extracts the secret image pixel data
-def extract(merged_pix,merged_im):
-    extracted_pix=[]
+def extract(merged_pix,merged_im,extract_name):
+    pixel_map=merged_pix.load()
+    img_out=Image.new(merged_im.mode,merged_im.size) #creating a new image object
+    pixel_map_new=img_out.load()
+    pix_size=merged_im.size
+
     #Iterating through each pixel
     for i in range(merged_im.size[0]):
         for j in range(merged_im.size[1]):
-            extracted_pix.append
-"""
+            pixel_map_new[i,j]=extract_rbg(list(pixel_map[i,j]))
+
+            if pixel_map[i,j]!=(0,0,0):
+                pix_size=(i+1,j+1)
+    img_out=img_out.crop(0,0,pix_size[0],pix_size[1])
+    img_out.save(extract_name)
 
 #This controls the whole programs execution flow
 def initializer(num):
@@ -152,11 +180,6 @@ def initializer(num):
         time.sleep(5)
         cover_img_name=select_img()
 
-        #saving the image
-        print("Select the location and image name of the merged image without the extention:")
-        time.sleep(5)
-        save_img_name=save_img()
-
         #getting the pixel data
         cover_pix_data,cover_im=img_pixel_extraction(cover_img_name)
         secret_pix_data,secret_im=img_pixel_extraction(secret_img_name)
@@ -169,11 +192,14 @@ def initializer(num):
             else:
                 sys.exit()
 
-        #Merging the images
-        merged_pix=merge(cover_pix_data,cover_im,secret_img_data,secret_im)
+        #saving the image
+        print("Select the location and image name of the merged image without the extention:")
+        time.sleep(5)
+        save_img_name=save_img()
 
-        #saving the merged image
-        pixel_img_conversion(save_img_name,merged_pix,cover_im)
+        #print(type(cover_im.size[0]),cover_im.size[1],secret_im.size[0],secret_im.size[1])
+        #Merging the images
+        merge(cover_pix_data,cover_im,secret_pix_data,secret_im,save_img_name)
 
     #Decoding the image
     elif choice == '0':
@@ -187,9 +213,9 @@ def initializer(num):
 
         merged_pix,merged_im= img_pixel_extraction(img_name)
 
-        exract_pix=extract(merged_pix,merged_im)
+        exract_pix=extract(merged_pix,merged_im,extract_name)
 
-        pixel_img_conversion(extract_name,exract_pix,merged_im)
+        #pixel_img_conversion(extract_name,exract_pix,merged_im)
 
     #Exit
     elif choice == '5':
@@ -199,7 +225,7 @@ def initializer(num):
     else:
         print("Invalid entry pls try again is 3sec")
         time.sleep(3)
-        initializer()
+        initializer(0)
 
 
 #print(info)
