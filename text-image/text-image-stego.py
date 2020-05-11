@@ -179,7 +179,7 @@ def img_pixel_extraction(file_name):
 #This controls the whole programs execution flow
 def initializer():
     clear()
-    choice=input("Simple Image Steganography\nEnter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
+    choice=input("Simple text in Image Steganography\nEnter:\n '1' to Encode the image\n '0' to Decode the image\n '5' to exit\n")
 
     #Encoding the image
     if choice == '1':
