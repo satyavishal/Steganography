@@ -4,6 +4,7 @@ import time
 import tkinter as tk
 from tkinter import filedialog
 import os
+
 """
 cover_img_names=["cover_img(1920X1200).jpg","cover_img(1920X1200).png",]
 
@@ -20,7 +21,7 @@ Note:
 2. Always save the merged image in PNG format to avoid compression of the image.
    Also when sending the image over the internet make sure there is no compression, to do soo you can zip
    the image or convert it into rar and send it, or send the image as document if you are sending it via watsapp.
-3. The merged image is saved by default as .png, hence while saving file dont enter the extension
+3. The merged image is saved by default as .png, hence while saving file dont enter the extension.
 
 """
 
@@ -86,17 +87,18 @@ def bin_decimal_conversion(x):
 
 #Merges the RBG values ie input is the rbg values of 2 pixles and output is the merged pixel rbg values
 def merge_rbg(cov,sec):
+    #Converting decimal RBG values into binary
     for i in range(3):
         cov[i]=decimal_bin_conversion(cov[i])
         sec[i]=decimal_bin_conversion(sec[i])
 
     r1,b1,g1=cov
     r2,b2,g2=sec
-
+    #merging the rbg values
     merged_rbg_pix=[r1[:4]+r2[:4],
                     b1[:4]+b2[:4],
                     g1[:4]+g2[:4]]
-
+    #Converting binary merged RBG values into decimal
     for i in range(3):
         merged_rbg_pix[i]=bin_decimal_conversion(merged_rbg_pix[i])
 
@@ -104,30 +106,32 @@ def merge_rbg(cov,sec):
 
 #Merges the cover and secret images and saves the merged Image
 def merge(cover_pix,cover_im,secret_pix,secret_im,img_name):
-    img_out=Image.new(cover_im.mode,cover_im.size) #creating a new image object
+    #creating a new image object
+    img_out=Image.new(cover_im.mode,cover_im.size)
     pixel_map=img_out.load()
     #Iterating through each pixel
     for i in range(cover_im.size[0]):
         for j in range(cover_im.size[1]):
             if i < secret_im.size[0] and j < secret_im.size[1]:
-                #print(i,j)
                 pixel_map[i,j]=merge_rbg(list(cover_pix[i,j]),list(secret_pix[i,j]))
             else:
                 pixel_map[i,j]=merge_rbg(list(cover_pix[i,j]),[0,0,0])
-
+    #saving the merged image
     img_out.save(img_name)
 
 #extracts the rbg values of the secret image
 def extract_rbg(pix):
+    #Converting decimal RBG values into binary
     for i in range(3):
         pix[i]=decimal_bin_conversion(pix[i])
 
     r,b,g=pix
-
+    #Extracting the secret rbg values
     pix_out=[r[4:]+"0000",
              b[4:]+"0000",
              g[4:]+"0000"]
 
+    #Converting binary Extracted RBG values into decimal
     for i in range(3):
         pix_out[i]=bin_decimal_conversion(pix_out[i])
 
@@ -135,8 +139,8 @@ def extract_rbg(pix):
 
 #extracts the secret image pixel data and saves the image
 def extract(merged_pix,merged_im,extract_name):
-    #pixel_map=merged_pix.load()
-    img_out=Image.new(merged_im.mode,merged_im.size) #creating a new image object
+    #creating a new image object
+    img_out=Image.new(merged_im.mode,merged_im.size)
     pixel_map_new=img_out.load()
     pix_size=merged_im.size
 
@@ -147,7 +151,9 @@ def extract(merged_pix,merged_im,extract_name):
 
             if pixel_map_new[i,j]!=(0,0,0):
                 pix_size=(i+1,j+1)
+    #cropping the image
     img_out=img_out.crop((0,0,pix_size[0],pix_size[1]))
+    #saving the extracted Image
     img_out.save(extract_name)
 
 #This controls the whole programs execution flow
