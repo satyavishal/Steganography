@@ -244,7 +244,7 @@ def initializer(num):
 
     #Exit
     elif choice == '5':
-        sys.exit()
+        exit()
 
     #Invalid entry
     else:
