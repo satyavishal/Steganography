@@ -4,6 +4,7 @@ import time
 import tkinter as tk
 from tkinter import filedialog
 import os
+import multiprocessing as mp
 
 #opens a dialog box to select an image
 def select_img():
@@ -23,9 +24,10 @@ def Save_file():
 
 #opens a new image object takes file name as the input
 def image_pixel(file_name):
-    im=Image.new(file_name)
+    im=Image.open(file_name)
     pix_list=list(im.getdata())
-    return pix_list,im
+    global im
+    return pix_list
 
 # creates an empty image object takes pixels list ,new file name,original im object as input
 def pixel_image(fileout,pixels,im):
@@ -46,12 +48,13 @@ def decimal_bin_conversion(x):
     l.reverse()
     return "".join(l)
 
-#takes a pixel list and modifies it as a list of lists of rbg values in binary
+#takes a pixel list and modifies it as a list of rbg values in binary
 def pixel_bin_conversion(pixels):
     l=[]
     for i in pixels:
         for j in i:
             l.append(decimal_bin_conversion(j))
+    return l
 
 #takes binary number as input and returns its equivalent decimal value
 def bin_decimal_conversion(x):
@@ -68,14 +71,26 @@ def bin_pixel_conversion(pixels):
     for i in pixels:
         for j in i:
             z.append(bin_decimal_conversion(j))
+    return z
 
 
 def bit_plane_extraction(pixels):
-    pix_planes=[p7=[],p6=[],p5=[],p4=[],p3=[],p2=[],p1=[],p0=[]]
+    pix_planes=[[],[],[],[],[],[],[],[]]
     for i in pixels:
+        c=0
+        for j in i:
+            pix_planes[c].append(j)
+    print(pix_planes[0])
+
 
 def initializer(num):
     print("select the image you wanna extract the bit plane for after the dialog box appears:")
     file_name=select_img()
     pix,im=image_pixel(file_name)
     l=pixel_bin_conversion(pix)
+    pool = mp.Pool(mp.cpu_count())
+    for i in range (7,-1,-1):
+        pool.apply_async(bit_plane_extraction, args=(pix,i))
+    pix=bit_plane_extraction(l)
+
+initializer(0)
