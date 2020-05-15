@@ -240,7 +240,7 @@ def initializer(num):
 
         exract_pix=extract(merged_pix,merged_im,extract_name)
 
-        #pixel_img_conversion(extract_name,exract_pix,merged_im)
+        pixel_img_conversion(extract_name,exract_pix,merged_im)
 
     #Exit
     elif choice == '5':
