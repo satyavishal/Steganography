@@ -18,8 +18,7 @@ def select_img():
 def Save_file():
     root=tk.Tk()
     root.withdraw()
-    file_path = filedialog.asksaveasfilename(title="Save the image",
-    defaultextension=".png",initialdir="S:\\Projects")
+    file_path = filedialog.asksaveasfilename(title="Save the image",initialdir="S:\\Projects")
     return file_path
 
 #opens a new image object takes file name as the input
@@ -74,25 +73,36 @@ def bin_pixel_conversion(pixels):
         pixels[c]=tuple(l)
         c+=1
 
-def bit_plane_extraction(pixels,pos,im):
+def bit_plane_extraction(pixels,pos,im,name):
     plane=[]
     for i in pixels:
         plane.append(i[pos]+"0000000")
     plane_iter=iter(plane)
     final=list(zip(plane_iter,plane_iter,plane_iter))
     bin_pixel_conversion(final)
-    pixel_image("plane{num}.png".format(num=pos),final,im)
+    pixel_image(name+"_plane{num}.png".format(num=pos),final,im)
     #print(plane)
+    return 0
 
+def poolooo(l,save_name):
+    pool = mp.Pool(mp.cpu_count())
+    for i in range (8):
+        result=pool.apply(bit_plane_extraction, args=(l,i,im,save_name))
+    pool.close()
 
 def initializer(num):
     print("select the image you wanna extract the bit plane for after the dialog box appears:")
     file_name=select_img()
+    print("Select the location you want to save your extracted bit planes")
+    save_name=Save_file()
     pix,im=image_pixel(file_name)
     l=pixel_bin_conversion(pix)
+    for i in range (8):
+        bit_plane_extraction(l,i,im,save_name)
     #pool = mp.Pool(mp.cpu_count())
-    #for i in range (7,-1,-1):
-    #    pool.apply_async(bit_plane_extraction, args=(pix,i))
-    bit_plane_extraction(l,0,im)
+    #for i in range (8):
+    #    result=pool.apply(bit_plane_extraction, args=(l,i,im,save_name))
+    #pool.close()
+
 
 initializer(0)
